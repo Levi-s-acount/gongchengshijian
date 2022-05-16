@@ -48,7 +48,7 @@ public class TeacherController {
     }
 
     //获取题目信息,查询条件(可无)(questionType,questionBank,questionContent)
-    @GetMapping("/get/question")
+    @GetMapping("/getQuestion")
     public Result<List<Question>> getQuestion(@RequestParam(required = false) String questionType,
                                               @RequestParam(required = false) String questionBank,
                                               @RequestParam(required = false) String questionContent) {
