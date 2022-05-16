@@ -1,6 +1,7 @@
 package com.fifteen.webproject.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fifteen.webproject.bean.entity.Answer;
 import com.fifteen.webproject.bean.entity.ExamQuestion;
@@ -8,6 +9,7 @@ import com.fifteen.webproject.bean.entity.Question;
 import com.fifteen.webproject.bean.vo.QuestionVo;
 import com.fifteen.webproject.mapper.AnswerMapper;
 import com.fifteen.webproject.mapper.ExamQuestionMapper;
+import com.fifteen.webproject.mapper.QuestionBankMapper;
 import com.fifteen.webproject.mapper.QuestionMapper;
 import com.fifteen.webproject.service.QuestionService;
 import com.fifteen.webproject.utils.result.Result;
@@ -31,6 +33,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     private AnswerMapper answerMapper;
     @Autowired
     private ExamQuestionMapper examQuestionMapper;
+    @Autowired
+    private QuestionBankMapper questionBankMapper;
 
     @Override
     public QuestionVo getQuestionVoById(Integer id) {
@@ -129,6 +133,123 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             // 2. 删除答案表对应当前题目id的答案
             answerMapper.deleteByMap(map);
         }
+    }
+
+    @Override
+    public void addQuestion(QuestionVo questionVo) {
+        // 查询所有的问题,然后就可以设置当前问题的id了
+        List<Question> qus = questionMapper.selectList(null);
+        Integer currentQuId = qus.get(qus.size() - 1).getId() + 1;
+        Question question = new Question();
+        // 设置基础字段
+        question.setQuType(questionVo.getQuestionType());
+        question.setId(currentQuId);
+        setQuestionField(question, questionVo);
+        // 设置题目插图
+        if (questionVo.getImages().length != 0) {
+            String QuImages = Arrays.toString(questionVo.getImages());
+            question.setImage(QuImages.substring(1, QuImages.length() - 1).replaceAll(" ", ""));
+        }
+        buildBankName(questionVo, question);
+
+        questionMapper.insert(question);
+        // 设置答案对象
+        StringBuilder multipleChoice = new StringBuilder();
+        if (questionVo.getQuestionType() != 4) {// 不为简答题
+            Answer answer = new Answer();
+            answer.setQuestionId(currentQuId);
+            StringBuilder imgs = new StringBuilder();
+            StringBuilder answers = new StringBuilder();
+            for (int i = 0; i < questionVo.getAnswer().length; i++) {
+                if (questionVo.getAnswer()[i].getImages().length > 0) {// 如果该选项有一张图片信息
+                    imgs.append(questionVo.getAnswer()[i].getImages()[0]).append(",");
+                }
+                buildAnswer(answers, questionVo, i, multipleChoice, answer);
+            }
+            buildMultiQuestionAnswer(questionVo, multipleChoice, answer, imgs, answers);
+            answerMapper.insert(answer);
+        }
+    }
+
+    @Override
+    public void updateQuestion(QuestionVo questionVo) {
+        Question question = new Question();
+        // 设置基础字段
+        question.setQuType(questionVo.getQuestionType());
+        question.setId(questionVo.getQuestionId());
+        setQuestionField(question, questionVo);
+        // 设置题目插图
+        if (questionVo.getImages() != null && questionVo.getImages().length != 0) {
+            String QuImages = Arrays.toString(questionVo.getImages());
+            question.setImage(QuImages.substring(1, QuImages.length() - 1).replaceAll(" ", ""));
+        }
+        buildBankName(questionVo, question);
+        // 更新
+        questionMapper.update(question, new UpdateWrapper<Question>().eq("id", questionVo.getQuestionId()));
+        // 设置答案对象
+        StringBuilder multipleChoice = new StringBuilder();
+        if (questionVo.getQuestionType() != 4) {// 不为简答题
+            Answer answer = new Answer();
+            answer.setQuestionId(questionVo.getQuestionId());
+            StringBuilder imgs = new StringBuilder();
+            StringBuilder answers = new StringBuilder();
+            for (int i = 0; i < questionVo.getAnswer().length; i++) {
+                if (questionVo.getAnswer()[i].getImages() != null && questionVo.getAnswer()[i].getImages().length > 0) {// 如果该选项有一张图片信息
+                    imgs.append(questionVo.getAnswer()[i].getImages()[0]).append(",");
+                }
+                buildAnswer(answers, questionVo, i, multipleChoice, answer);
+            }
+            buildMultiQuestionAnswer(questionVo, multipleChoice, answer, imgs, answers);
+            answerMapper.update(answer, new UpdateWrapper<Answer>().eq("question_id", questionVo.getQuestionId()));
+        }
+    }
+
+    private void buildMultiQuestionAnswer(QuestionVo questionVo, StringBuilder multipleChoice, Answer answer, StringBuilder imgs, StringBuilder answers) {
+        if (questionVo.getQuestionType() == 2)
+            answer.setTrueOption(multipleChoice.substring(0, multipleChoice.toString().length() - 1));
+        String handleImgs = imgs.toString();
+        String handleAnswers = answers.toString();
+        if (handleImgs.length() != 0) handleImgs = handleImgs.substring(0, handleImgs.length() - 1);
+        if (handleAnswers.length() != 0) handleAnswers = handleAnswers.substring(0, handleAnswers.length() - 1);
+
+        // 设置答案的图片
+        answer.setImages(handleImgs);
+        // 设置所有的选项
+        answer.setAllOption(handleAnswers);
+    }
+
+    private void buildAnswer(StringBuilder answers, QuestionVo questionVo, int i, StringBuilder multipleChoice, Answer answer) {
+        answers.append(questionVo.getAnswer()[i].getAnswer()).append(",");
+        // 设置对的选项的下标值
+        if (questionVo.getQuestionType() == 2) {// 多选
+            if (questionVo.getAnswer()[i].getIsTrue().equals("true")) multipleChoice.append(i).append(",");
+        } else {// 单选和判断 都是仅有一个答案
+            if (questionVo.getAnswer()[i].getIsTrue().equals("true")) {
+                answer.setTrueOption(i + "");
+                answer.setAnalysis(questionVo.getAnswer()[i].getAnalysis());
+            }
+        }
+    }
+
+    private void buildBankName(QuestionVo questionVo, Question question) {
+        StringBuilder bankNames = new StringBuilder();
+        for (Integer integer : questionVo.getBankId()) {
+            bankNames.append(questionBankMapper.selectById(integer).getBankName()).append(",");
+        }
+        String names = bankNames.toString();
+        names = names.substring(0, names.length() - 1);
+        question.setQuBankName(names);
+    }
+
+    private void setQuestionField(Question question, QuestionVo questionVo) {
+        question.setCreateTime(new Date());
+        question.setLevel(questionVo.getQuestionLevel());
+        question.setAnalysis(questionVo.getAnalysis());
+        question.setQuContent(questionVo.getQuestionContent());
+        question.setCreatePerson(questionVo.getCreatePerson());
+        // 设置所属题库
+        String bankIds = Arrays.toString(questionVo.getBankId());
+        question.setQuBankId(bankIds.substring(1, bankIds.length() - 1).replaceAll(" ", ""));
     }
 
 }

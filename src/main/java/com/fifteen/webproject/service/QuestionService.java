@@ -19,4 +19,8 @@ public interface QuestionService extends IService<Question> {
     Result<List<Question>>getQuestion(String questionType, String questionBank, String questionContent);
 
     void deleteQuestionByIds(String questionIds);
+
+    void addQuestion(QuestionVo questionVo);
+
+    void updateQuestion(QuestionVo questionVo);
 }

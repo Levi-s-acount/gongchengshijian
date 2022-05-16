@@ -212,4 +212,53 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
             questionMapper.update(question, new UpdateWrapper<Question>().eq("id", question.getId()));
         }
     }
+
+    @Override
+    public void deleteQuestionBank(String ids) {
+        String[] bankId = ids.split(",");
+        for (String s : bankId) {
+            // 找到题库
+            QuestionBank questionBank = questionBankMapper.selectById(s);
+            // 找到与此题库相关的所有问题信息
+            List<Question> questions = questionMapper.selectList(new QueryWrapper<Question>().like("qu_bank_name", questionBank.getBankName()));
+            // 移除与此题库相关的信息
+            for (Question question : questions) {
+                String quBankName = question.getQuBankName();
+                String quBankId = question.getQuBankId();
+                String[] name = quBankName.split(",");
+                String[] id = quBankId.split(",");
+                // 新的题库名
+                String[] newName = new String[name.length - 1];
+                // 新的题库id数据
+                String[] newId = new String[id.length - 1];
+
+                for (int i = 0, j = 0; i < name.length; i++) {
+                    if (!name[i].equals(questionBank.getBankName())) {
+                        newName[j] = name[i];
+                        j++;
+                    }
+                }
+                for (int i = 0, j = 0; i < id.length; i++) {
+                    if (!id[i].equals(String.valueOf(questionBank.getBankId()))) {
+                        newId[j] = id[i];
+                        j++;
+                    }
+                }
+                String handleName = Arrays.toString(newName).replaceAll(" ", "").replaceAll("]", "").replace("[", "");
+                String handleId = Arrays.toString(newId).replaceAll(" ", "").replaceAll("]", "").replace("[", "");
+                // 设置删除题库后的新字段
+                question.setQuBankName(handleName);
+                question.setQuBankId(handleId);
+                // 更新题目
+                questionMapper.update(question, new UpdateWrapper<Question>().eq("id", question.getId()));
+            }
+            // 删除题库
+            questionBankMapper.deleteById(Integer.parseInt(s));
+        }
+    }
+
+    @Override
+    public void addQuestionBank(QuestionBank questionBank) {
+        questionBankMapper.insert(questionBank);
+    }
 }

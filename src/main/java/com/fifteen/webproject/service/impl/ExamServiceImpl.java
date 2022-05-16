@@ -1,15 +1,14 @@
 package com.fifteen.webproject.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fifteen.webproject.bean.entity.*;
+import com.fifteen.webproject.bean.vo.AddExamByBankVo;
 import com.fifteen.webproject.bean.vo.AddExamByQuestionVo;
 import com.fifteen.webproject.bean.vo.ExamQueryVo;
-import com.fifteen.webproject.mapper.AnswerMapper;
-import com.fifteen.webproject.mapper.ExamMapper;
-import com.fifteen.webproject.mapper.ExamQuestionMapper;
-import com.fifteen.webproject.mapper.ExamRecordMapper;
+import com.fifteen.webproject.mapper.*;
 import com.fifteen.webproject.service.ExamService;
 
 import com.fifteen.webproject.utils.SaltEncryption;
@@ -39,6 +38,8 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper,Exam> implements Exa
     private ExamRecordMapper examRecordMapper;
     @Autowired
     private AnswerMapper answerMapper;
+    @Autowired
+    private QuestionMapper questionMapper;
 
     @Override
     public Result<List<Exam>> getExamPage(ExamQueryVo examQueryVo) {
@@ -77,53 +78,142 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper,Exam> implements Exa
     }
 
     @Override
-    public Integer addExamRecord(ExamRecord examRecord, HttpServletRequest request) {
-        User user = (User) request.getAttribute("user");
-        examRecord.setUserId(user.getId());
-        // 设置id
-        List<ExamRecord> examRecords = examRecordMapper.selectList(null);
-        int id=1;
-        if (examRecords.size() > 0) {
-            id = examRecords.get(examRecords.size() - 1).getRecordId() + 1;
-        }
-        examRecord.setRecordId(id);
-        // 设置逻辑题目的分数
-        // 查询所有的题目答案信息
-        List<Answer> answers = answerMapper.selectList(new QueryWrapper<Answer>().in("question_id", Arrays.asList(examRecord.getQuestionIds().split(","))));
-        // 查询考试的题目的分数
-        HashMap<String, String> map = new HashMap<>();// key是题目的id  value是题目分值
-        ExamQuestion examQuestion = examQuestionMapper.selectOne(new QueryWrapper<ExamQuestion>().eq("exam_id", examRecord.getExamId()));
-        // 题目的id
-        String[] ids = examQuestion.getQuestionIds().split(",");
-        // 题目在考试中对应的分数
-        String[] scores = examQuestion.getScores().split(",");
-        for (int i = 0; i < ids.length; i++) {
-            map.put(ids[i], scores[i]);
-        }
-        // 逻辑分数
-        int logicScore = 0;
-        // 错题的id
-        StringBuilder sf = new StringBuilder();
-        // 用户的答案
-        String[] userAnswers = examRecord.getUserAnswers().split("-");
-        for (int i = 0; i < examRecord.getQuestionIds().split(",").length; i++) {
-            int index = SaltEncryption.getIndex(answers, Integer.parseInt(examRecord.getQuestionIds().split(",")[i]));
-            if (index != -1) {
-                if (Objects.equals(userAnswers[i], answers.get(index).getTrueOption())) {
-                    logicScore += Integer.parseInt(map.get(examRecord.getQuestionIds().split(",")[i]));
-                } else {
-                    sf.append(examRecord.getQuestionIds().split(",")[i]).append(",");
+    public void operationExam(Integer type, String ids) {
+        String[] id = ids.split(",");
+        switch (type) {
+            case 1:
+                setExamStatus(id, 1);
+                break;
+            case 2:
+                setExamStatus(id, 2);
+                break;
+            case 3:
+                Map<String, Object> map = new HashMap<>();
+                for (String s : id) {
+                    map.clear();
+                    map.put("exam_id", Integer.parseInt(s));
+                    examMapper.deleteByMap(map);
+                    examQuestionMapper.deleteByMap(map);
                 }
+                break;
+            default:
+                throw new AppException("错误的操作");
+        }
+    }
+
+    @Override
+    public void addExamByBank(AddExamByBankVo addExamByBankVo) {
+        Exam exam = new Exam();
+        exam.setStatus(addExamByBankVo.getStatus());
+        exam.setDuration(addExamByBankVo.getExamDuration());
+        if (addExamByBankVo.getEndTime() != null) exam.setEndTime(addExamByBankVo.getEndTime());
+        if (addExamByBankVo.getStartTime() != null) exam.setStartTime(addExamByBankVo.getStartTime());
+        exam.setExamDesc(addExamByBankVo.getExamDesc());
+        exam.setExamName(addExamByBankVo.getExamName());
+        exam.setPassScore(addExamByBankVo.getPassScore());
+        // 设置id
+        ExamQuestion examQuestion = buildExamQuestion(exam);
+        // 设置题目id字符串
+        HashSet<Integer> set = new HashSet<>();
+        String[] bankNames = addExamByBankVo.getBankNames().split(",");
+
+        for (String bankName : bankNames) {
+            List<Question> questions = questionMapper.selectList(new QueryWrapper<Question>().like("qu_bank_name", bankName));
+            for (Question question : questions) {
+                set.add(question.getId());
             }
         }
-        examRecord.setLogicScore(logicScore);
-        if (sf.length() > 0) {// 存在错的逻辑题
-            examRecord.setErrorQuestionIds(sf.substring(0, sf.toString().length() - 1));
+        String quIds = set.toString().substring(1, set.toString().length() - 1).replaceAll(" ", "");
+        System.out.println(quIds);
+        examQuestion.setQuestionIds(quIds);
+        // 设置每一题的分数
+        String[] s = quIds.split(",");
+        // 总分
+        int totalScore = 0;
+        StringBuilder sf = new StringBuilder();
+        for (String s1 : s) {
+            Question question = questionMapper.selectById(Integer.parseInt(s1));
+            if (question.getQuType() == 1) {
+                sf.append(addExamByBankVo.getSingleScore()).append(",");
+                totalScore += addExamByBankVo.getSingleScore();
+            } else if (question.getQuType() == 2) {
+                sf.append(addExamByBankVo.getMultipleScore()).append(",");
+                totalScore += addExamByBankVo.getMultipleScore();
+            } else if (question.getQuType() == 3) {
+                sf.append(addExamByBankVo.getJudgeScore()).append(",");
+                totalScore += addExamByBankVo.getJudgeScore();
+            } else if (question.getQuType() == 4) {
+                sf.append(addExamByBankVo.getShortScore()).append(",");
+                totalScore += addExamByBankVo.getShortScore();
+            }
         }
+        examQuestion.setScores(sf.substring(0, sf.toString().length() - 1));
+        // 设置总成绩
+        exam.setTotalScore(totalScore);
 
-        System.out.println(examRecord);
-        examRecord.setExamTime(new Date());
-        examRecordMapper.insert(examRecord);
-        return id;
+        examMapper.insert(exam);
+        examQuestionMapper.insert(examQuestion);
+    }
+
+    @Override
+    public void addExamByQuestionList(AddExamByQuestionVo addExamByQuestionVo) {
+        Exam exam = new Exam();
+        exam.setTotalScore(addExamByQuestionVo.getTotalScore());
+        exam.setPassScore(addExamByQuestionVo.getPassScore());
+        if (addExamByQuestionVo.getEndTime() != null) exam.setEndTime(addExamByQuestionVo.getEndTime());
+        if (addExamByQuestionVo.getStartTime() != null) exam.setStartTime(addExamByQuestionVo.getStartTime());
+        exam.setExamDesc(addExamByQuestionVo.getExamDesc());
+        exam.setExamName(addExamByQuestionVo.getExamName());
+        exam.setDuration(addExamByQuestionVo.getExamDuration());
+        exam.setStatus(addExamByQuestionVo.getStatus());
+        // 设置id
+        ExamQuestion examQuestion = buildExamQuestion(exam);
+        examQuestion.setScores(addExamByQuestionVo.getScores());
+        examQuestion.setQuestionIds(addExamByQuestionVo.getQuestionIds());
+
+        examMapper.insert(exam);
+        examQuestionMapper.insert(examQuestion);
+    }
+
+    @Override
+    public void updateExamInfo(AddExamByQuestionVo addExamByQuestionVo) {
+        Exam exam = new Exam();
+        exam.setTotalScore(addExamByQuestionVo.getTotalScore());
+        exam.setPassScore(addExamByQuestionVo.getPassScore());
+        exam.setEndTime(addExamByQuestionVo.getEndTime());
+        exam.setStartTime(addExamByQuestionVo.getStartTime());
+        exam.setExamDesc(addExamByQuestionVo.getExamDesc());
+        exam.setExamName(addExamByQuestionVo.getExamName());
+        exam.setDuration(addExamByQuestionVo.getExamDuration());
+        exam.setStatus(addExamByQuestionVo.getStatus());
+        exam.setExamId(addExamByQuestionVo.getExamId());
+        // 设置考试的题目和分值信息
+        ExamQuestion examQuestion = new ExamQuestion();
+        examQuestion.setExamId(addExamByQuestionVo.getExamId());
+        examQuestion.setScores(addExamByQuestionVo.getScores());
+        examQuestion.setQuestionIds(addExamByQuestionVo.getQuestionIds());
+
+        examMapper.update(exam, new UpdateWrapper<Exam>().eq("exam_id", exam.getExamId()));
+        examQuestionMapper.update(examQuestion, new UpdateWrapper<ExamQuestion>().eq("exam_id", exam.getExamId()));
+    }
+
+    private ExamQuestion buildExamQuestion(Exam exam) {
+        List<Exam> examList = examMapper.selectList(null);
+        int id = 0;
+        if (examList.size() != 0) {
+            id = examList.get(examList.size() - 1).getExamId() + 1;
+        }
+        exam.setExamId(id);
+        ExamQuestion examQuestion = new ExamQuestion();
+        examQuestion.setExamId(id);
+        return examQuestion;
+    }
+
+    private void setExamStatus(String[] id, int status) {
+        for (String s : id) {
+            Exam exam = examMapper.selectOne(new QueryWrapper<Exam>().eq("exam_id", Integer.parseInt(s)));
+            exam.setStatus(status);
+            examMapper.update(exam, new UpdateWrapper<Exam>().eq("exam_id", s));
+        }
     }
 }

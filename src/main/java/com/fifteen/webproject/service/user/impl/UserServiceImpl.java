@@ -1,19 +1,23 @@
 package com.fifteen.webproject.service.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fifteen.webproject.bean.entity.User;
+import com.fifteen.webproject.bean.vo.UserVO;
 import com.fifteen.webproject.mapper.user.UserMapper;
 import com.fifteen.webproject.service.user.UserService;
 import com.fifteen.webproject.utils.SecretUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.fifteen.webproject.bean.vo.UserVO.fromUser;
+
 /**
  * @Author Fifteen
  * @Date 2022/4/8
  **/
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
     @Autowired
     private UserMapper userMapper;
 
@@ -52,5 +56,10 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("account",account);
         return userMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public UserVO getUserInfoById(Integer userId) {
+        return fromUser(userMapper.selectById(userId));
     }
 }
