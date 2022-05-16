@@ -42,7 +42,7 @@ public class StudentController {
     //保存考试记录信息,返回保存记录的id
     @PostMapping("/addExamRecord")
     public Result<Integer> addExamRecord(@RequestBody ExamRecord examRecord, HttpServletRequest request) {
-        Integer id = examService.addExamRecord(examRecord, request);
+        Integer id = examRecordService.addExamRecord(examRecord, request);
         return new Result<>(id, true, null);
     }
     //TODO 优化成多id一次查询

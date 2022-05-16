@@ -24,4 +24,8 @@ public interface QuestionBankService extends IService<QuestionBank> {
     void addQuestionToBank(String questionIds, String banks);
 
     void removeBankQuestion(String questionIds, String banks);
+
+    void deleteQuestionBank(String ids);
+
+    void addQuestionBank(QuestionBank questionBank);
 }
