@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./CSS/loginManager.css">
+    <script src="./JS/loginManager.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+    <div class="wrapper header">
+        <span class="logo">管理员登录系统</span>
+    </div>
+    <div class=" wrapper content">
+        <div class="nav">
+            <ul class="nav-ul">
+                <li><span class='login' style="border-bottom: 3px solid #008ABC; color:rgba(0, 0, 0, 1);">登录</span></li>
+            </ul>
+        </div>
+        <form class="form-login" id="form-login">
+            <div class="formarea-login">
+                <div class="input-wrapper username">
+                    <input type="text" class="input" placeholder="用户名" name="account">
+                </div>
+                <div class="input-wrapper password-login">
+                    <input type="password" class="input" placeholder="密码" name="password" style="width: 255px;">
+                </div>
+                <div class="sltbox">
+                    <select name="ID" id="" class="slt">
+                        <option value="0">系统管理员</option>
+                        <option value="1">学院秘书</option>
+                        <option value="2">教师</option>
+                    </select>
+                </div>
+                <input type="submit" value="登录" class="btn">
+                <div class="vefbox">
+                    <div class="vefbox2">
+                        <img src="" alt="验证码" class="vef">
+                    </div>
+                    <input type="text" class="vefcode" name="verificationCode">
+                </div>
+            </div>
+        </form>
+</body>
+</html>

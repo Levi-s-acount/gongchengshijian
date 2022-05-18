@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中医药方记忆系统</title>
+    <link rel="stylesheet" href="./CSS/loginStu.css">
+    <script src="./JS/loginStu.js"></script>
+    <script src="./JS/commonTools.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="./JS/inputHints.js"></script>
+</head>
+<body>
+    <div class="wrapper header">
+        <span class="logo">中医药方记忆系统</span>
+    </div>
+    <div class=" wrapper content">
+        <div class="nav">
+            <ul class="nav-ul">
+                <li><span class='login' style="border-bottom: 3px solid #008ABC; color:rgba(0, 0, 0, 1);">登录</span></li>
+                <li><span class="register">注册</span></li>
+            </ul>
+        </div>
+        <form class="form-login" id="form-login">
+            <div class="formarea-login">
+                <div class="input-wrapper username">
+                    <input type="text" class="input" placeholder="用户名" name="account">
+                </div>
+                <div class="input-wrapper password-login">
+                    <input type="password" class="input" placeholder="密码" name="password" style="width: 255px;">
+                </div>
+                <input type="submit" value="登录" class="btn">
+                <div class="vefbox">
+                    <div class="vefbox2">
+                        <img src="" alt="验证码" class="vef">
+                    </div>
+                    <input type="text" class="vefcode" name="verificationCode">
+                </div>
+            </div>
+        </form>
+        <form action=""  method="post" class="form-register">
+            <div class="formarea-register">
+                <div class="input-wrapper name">
+                    <input type="text" placeholder="姓名" class="inputr">
+                </div>
+                <div class="input-wrapper ID-num">
+                    <input type="text" placeholder="学号" class="inputr">
+                </div>
+                <div class="input-wrapper university-id">
+                    <input type="text" placeholder="大学" class="inputr input-backend" cid="7" attrId="universityId" root="getUniversity">
+                    <div class="showbox">
+                        <ul>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-wrapper university-id">
+                    <input type="text" placeholder="学院" class="inputr input-backend" cid="7" attrId="collegeId" root="getCollege">
+                    <div class="showbox">
+                        <ul>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-wrapper university-id">
+                    <input type="text" placeholder="专业" class="inputr input-backend mj" cid="7" attrId="majorId" root="getMajor">
+                    <div class="showbox">
+                        <ul>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-wrapper university-id">
+                    <input type="text" placeholder="年级" class="inputr input-backend" cid="7" attrId="gradeId" root="getGrade">
+                    <div class="showbox">
+                        <ul>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-wrapper university-id">
+                    <input type="text" placeholder="班级" class="inputr input-backend" cid="7" attrId="classId" root="getClass">
+                    <div class="showbox">
+                        <ul>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-wrapper photo">
+                    <input type="file" class="inputr" accept=".jpg">
+                </div>
+                <div class="input-wrapper gender">
+                    <select name="" id="" class="sltGender">
+                        <option value="0">女</option>
+                        <option value="1">男</option>
+                    </select>
+                </div>
+                <input type="submit" value="注册" class="btn btn-r">
+                <div class="vefbox">
+                    <div class="vefbox2r" style="margin-top: 0;">
+                        <img src="" alt="验证码" class="vef">
+                    </div>
+                    <input type="text" class="vefcode">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

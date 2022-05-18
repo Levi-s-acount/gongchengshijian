@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>练习</title>
+    <link rel="stylesheet" href="./CSS/index.css">
+    <script src="./JS/commonTools.js"></script>
+    <script src="./JS/excpage.js"></script>
+</head>
+<body>
+    <div class="wrapper header">
+        <div class="logo">
+            <span><a href="./index.html" style="color: #0c4991;">卷卷系统||卷死你们专用平台</a></span>
+        </div>
+        <div class="module">
+            <ul class="header-ul">
+                <li style="color:#4f80f2;" li-id="1">练习闯关</li>
+                <li li-id="2"><a href="./exampage.html">考试进阶</a></li>
+            </ul>
+        </div>
+        <div class="user">
+            <div class="user-pic"><img src="#" alt=""></div>
+            <div class="username">testuser</div>
+        </div>
+    </div>
+    <div class="content wrapper" id="exc-content-warpper">
+        <div class="exc-conf conf-wrapper">
+            <ul class="exc-ul">
+                <li><span span-id="1">开始新的练习方案</span></li>
+                <li><span span-id="2" style="color:#ffffff; background-color:#1c80f2;">选择已有的练习方案</span></li>
+            </ul>
+            <button class="btn-exc btn" btn-id="0">下一步</button>
+            <button class="btn-exc-pre btn" btn-id="1">上一步</button>
+        </div>
+        <div class="new-exc choice-content" style="display: none;">
+            <div class="subject-sheet sub-content" con-id="0">
+                <div class="subject item-box-wrapper">
+                    <div class="selected"></div>
+                    科目A
+                </div>
+                <div class="subject item-box-wrapper">
+                    <div class="selected"></div>
+                    科目B
+                </div>
+                <div class="subject item-box-wrapper">
+                    <div class="selected"></div>
+                    科目C
+                </div>
+                <div class="subject item-box-wrapper">
+                    <div class="selected"></div>
+                    科目D
+                </div>
+            </div>
+            <div class="plan-conf-sheet" con-id="1">
+                <form action="#" method="post">
+                    <input type="text" name="name" id="" class="plan-conf-bar" placeholder="方案名称">
+                    <select name="diffcultity" id="" class="plan-conf-bar">
+                        <option value="0">easier as a fool would complete within seconds</option>
+                        <option value="1">standard difficulty for all</option>
+                        <option value="1">hard as hell</option>
+                    </select>
+                    <!-- <input type="text" name="diffcultity" id="" class="plan-conf-bar" placeholder=""> -->
+                    <!-- <input type="text" name="" id="" class="plan-conf-bar">
+                    <input type="text" name="" id="" class="plan-conf-bar">
+                    <input type="text" name="" id="" class="plan-conf-bar"> -->
+                </form>
+            </div>
+        </div>
+        <div class="old-exc choice-content">
+            <div class="plan-sheet sub-content">
+                <div class="plan item-box-wrapper">
+                    方案一
+                </div>
+                <div class="plan item-box-wrapper">
+                    方案二
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="infobar infobar-wrapper">
+        <div class="fake-info-wrapper">
+            <div class="info-one infobar-init-wrapper">
+                <div class="one-logo">卷卷系统</div>
+                <div class="gig-wrapper">
+                    <div>
+                        <div>在卷人数</div>
+                        <div>27</div>
+                    </div>
+                    <div>
+                        <div>题目</div>
+                        <div>729072</div>
+                    </div>
+                    <div>
+                        <div>教师</div>
+                        <div>78597</div>
+                    </div>
+                    <div>
+                        <div>注册用户</div>
+                        <div>564374</div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-two infobar-init-wrapper">
+                <div>个人中心</div>
+                <div>积分查看</div>
+                <div>答疑</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
