@@ -1,0 +1,226 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    /* 内减模式，在修改padding，border时自动计算盒子大小 */
+    box-sizing: border-box;
+}
+/* 清除列表样式 */
+li{
+    list-style: none;
+}
+/* 清除表单默认样式 */
+input{
+    background: none;
+    outline: none;
+    border: none;
+}
+/* 清除超链接标签文本样式 */
+a{
+    text-decoration: none;
+    color: black;
+}
+/* 清除select样式 */
+select{
+    border: none;
+    outline: none;
+    background: none;
+}
+/* 清除因浮动块不占标准流位置带来的影响以及父子块调整margin时带来的外边距塌陷 */
+.clearfix::before,
+.clearfix::after{
+    content: '';
+    display: table;
+}
+.clearfix::after{
+    clear: both;
+}
+
+/* 版心居中 */
+.wrapper{
+    margin: 0 auto;
+    width: 1200px;
+}
+/* 文档头部样式 */
+.header{
+    width: 1200px;
+    height: 70px;
+    /* border-top: 4px solid #008abc; */
+    /* background-color: skyblue; */
+}
+/* 头部LOGO样式 */
+.logo{
+    display: inline-block;
+
+    margin-left: 475px;
+    width: 250px;
+    height: 55px;
+    /* border: 2px solid orange;
+    border-radius: 15px; */
+    /* background-color: skyblue;
+    opacity: 0.3; */
+
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 25px;
+    text-align: center;
+    line-height: 49px;
+    color: #008abc;
+}
+/* 登录框样式 */
+.content{
+    display: flex;
+    flex-direction: column;
+
+    width: 352px;
+    /* height: 250px; */
+    margin-top: 145px;
+    border: 1px solid #dedfe0;
+    /* background-color: pink; */
+}
+/* 登录框导航栏样式 */
+.nav{
+    width: 352px;
+    height: 50px;
+    border-bottom: 1px solid #dedfe0;
+    /* background-color: aqua; */
+}
+/* 导航栏选项样式 */
+.nav-ul li{
+    float: left;
+
+    width: 70px;
+    height: 50px;
+    /* background-color: darkgoldenrod; */
+
+}
+.nav-ul li span{
+    display: block;
+
+    width: 48px;
+    margin-left: 10px;
+    text-align: center;
+    line-height: 47px;
+
+    color: rgba(0, 0, 0, 0.77);
+}
+.nav-ul li:hover span{
+    cursor: pointer;
+    color: rgba(0, 0, 0, 1);
+}
+
+/* 登录框表单区域样式 */
+.formarea-login{
+    display: flex;
+    flex-direction: column;
+
+    width: 352px;
+    /* background-color: brown; */
+}
+/* 输入框父盒子样式 */
+.input-wrapper{
+    width: 302px;
+    height: 40px;
+    margin-left: 24px;
+    border: 1px solid #dedfe0;
+    border-radius: 7px;
+}
+/* 输入框父盒子悬浮样式 */
+.input-wrapper:hover{
+    background-color: #f8f9fa;
+}
+/* 输入框样式 */
+.input{
+    float: right;
+
+    width: 265px;
+    height: 40px;
+    padding-left: 10px;
+}
+/* 输入框占位符 */
+.input::placeholder{
+    padding-left: 3px;
+}
+/* 输入框图标 */
+.username{
+    margin-top: 23px;
+    margin-bottom: 12px;
+    background-image: url("../images/Snipaste_2022-04-08_14-31-01.png");
+    background-repeat: no-repeat;
+    background-position-x: 5px;
+    background-position-y: 2px;
+}
+/* 输入框图标 */
+.password-login{
+    background-image: url("../images/Snipaste_2022-04-08_14-37-51.png");
+    background-repeat: no-repeat;
+    background-position-x: 5px;
+    background-position-y: 10px;
+}
+/* 身份选择框样式 */
+.slt{
+    width: 100px;
+    height: 22px;
+
+    text-align: center;
+    line-height: 20px;
+}
+/* 身份选择框父盒子样式 */
+.sltbox{
+    width: 100px;
+    height: 22px;
+    border: 1px solid #dedfe0;
+    border-radius: 5px;
+    margin-left: 24px;
+    margin-top: 22px;
+}
+/* 登录提交按钮样式 */
+.btn{
+    width: 95px;
+    height: 35px;
+    margin-left: 230px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    background-color: #202124;
+    border: 1px solid #202124;
+    border-radius: 15px;
+    
+    color: #ffffff;
+    font-size: 10px;
+}
+/* 登录提交按钮样式 */
+.btn:hover{
+    cursor: pointer;
+}
+/* 验证码最外层盒子 */
+.vefbox{
+    display: flex;
+    flex-direction: column;
+
+    width: 80px;
+    margin-left: 24px;
+    margin-bottom: 10px;
+    border: 1px solid #dedfe0;
+    /* background-color: #202124; */
+}
+/* 验证码父盒子 */
+.vefbox2{
+    width: 80px;
+    height: 30px;
+}
+/* 验证码框 */
+.vef{
+    float: left;
+
+    width: 80px;
+    height: 30px;
+}
+.vef:hover{
+    cursor: pointer;
+}
+/* 输入验证码框 */
+.vefcode{
+    height: 25px;
+    border-top: 1px solid #dedfe0;
+    padding-left: 10px;
+
+    font-size: 20px;
+}

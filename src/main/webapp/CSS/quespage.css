@@ -1,0 +1,147 @@
+body{
+    background-color: #ffffff;
+    background-image: none;
+}
+.header{
+    width: 60%;
+    height: 35px;
+    margin-top: 66px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #dedede;
+    /* background-color: skyblue; */
+}
+ul>li{
+    float: left;
+
+    height: 100%;
+    padding: 5px;
+    margin-right: 22px;
+    
+    text-align: center;
+}
+.btn-box{
+    float: right;
+
+    height: 35px;
+    width: 100px;
+    border-radius: 20px;
+    background-color: #ffd550;
+
+    text-align: center;
+}
+.btn-box:hover{
+    cursor: pointer;
+}
+.btn:hover{
+    cursor: pointer;
+}
+.btn{
+    line-height: 35px;
+}
+.ques-content{
+    display: flex;
+    flex-direction: row;
+
+    width: 60%;
+}
+.ques-view-wrapper{
+    float: left;
+    display: flex;
+    flex-direction: column;
+
+    width: 238px;
+    margin-top: 17px;
+    margin-left: 10px;
+    /* background-color: #f7d0e4; */
+    box-shadow: 3px 3px 3px 3px #f8f8f8;
+    border-radius: 15px;
+}
+.ques-box{
+    display: flex;
+    flex-direction: column;
+
+    padding: 16px;
+    width: 70%;
+    margin-top: 17px;
+    margin-left: 80px;
+    box-shadow: 3px 3px 3px 3px #f8f8f8;
+    border: 1px solid #dedede;
+}
+.ques-view{
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+.ques-id-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+
+    padding: 39px 20px;
+    border: 1px solid #dedfe0;
+}
+.id-box{
+    width: 45px;
+    height: 30px;
+    padding: 5px;
+    margin-left: 12px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+    /* border-radius: 7px; */
+    background-color: #eeeeee;
+    
+    text-align: center;
+}
+.id-box:hover{
+    cursor: pointer;
+    background-color: #ffd550;
+}
+.ques-info-box{
+    display: flex;
+    flex-wrap: wrap;
+}
+.order{
+    width: 37px;
+    height: 37px;
+    background-image: url('../images/examTitle.png');
+
+    text-align: center;
+    font-size: 20px;
+    line-height: 31px;
+    color: #ffffff;
+}
+.ques-desc{
+    width: 600px;
+    margin-left: 5px;
+
+    line-height: 30px;
+    word-wrap: break-word;
+}
+.ques-type{
+    line-height: 32px;
+}
+.pre-next-box{
+    margin-left: 5%;
+}
+.pn{
+    width: 100px;
+    height: 30px;
+    background-color: #409eff;
+    padding: 12px;
+    border-radius: 7px;
+
+    color: #ffffff;
+    line-height: 7px;
+    text-align: center;
+}
+.pn:hover{
+    cursor: pointer;
+}
+.ques-ans{
+    padding: 12px;
+}
+.ans{
+    /* margin-bottom: 12px; */
+    margin: 12px;
+}
+.options-box>div:hover{
+    background-color: #eff3f5c5;
+}
