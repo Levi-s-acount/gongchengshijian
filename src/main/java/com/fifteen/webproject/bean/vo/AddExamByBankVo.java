@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -18,7 +17,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class AddExamByBankVo {
 
-    @NotBlank
     private String bankNames;
 
     private Integer examDuration;
@@ -33,7 +31,6 @@ public class AddExamByBankVo {
 
     private String examDesc;
 
-    @NotBlank
     private String examName;
 
     private Integer judgeScore;

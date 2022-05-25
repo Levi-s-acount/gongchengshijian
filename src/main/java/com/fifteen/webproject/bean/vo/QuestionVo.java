@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author by wzz
@@ -16,17 +14,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class QuestionVo {
 
-    @NotNull
     private Integer questionType;
 
     private Integer questionId;
 
-    @NotNull
     private Integer questionLevel;
 
     private Integer[] bankId;
 
-    @NotBlank
     private String questionContent;
 
     private String[] images;
@@ -47,7 +42,6 @@ public class QuestionVo {
 
         private String isTrue;
 
-        @NotBlank
         private String answer;
 
         private String[] images;
