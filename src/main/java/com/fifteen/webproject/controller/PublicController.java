@@ -1,16 +1,20 @@
 package com.fifteen.webproject.controller;
 
+import com.fifteen.webproject.bean.dto.UpdatePasswordDTO;
 import com.fifteen.webproject.bean.entity.Exam;
+import com.fifteen.webproject.bean.entity.User;
 import com.fifteen.webproject.bean.vo.AddExamByQuestionVo;
 import com.fifteen.webproject.bean.vo.BankHaveQuestionSum;
 import com.fifteen.webproject.bean.vo.ExamQueryVo;
 import com.fifteen.webproject.bean.vo.QuestionVo;
 import com.fifteen.webproject.service.ExamService;
 import com.fifteen.webproject.service.QuestionBankService;
+import com.fifteen.webproject.service.user.UserService;
 import com.fifteen.webproject.utils.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,6 +28,8 @@ public class PublicController {
     private ExamService examService;
     @Autowired
     private QuestionBankService questionBankService;
+    @Autowired
+    private UserService userService;
 
     //根据信息查询考试的信息
     @PostMapping("/getExamInfo")
@@ -68,5 +74,16 @@ public class PublicController {
     public Result<List<QuestionVo>>getQuestionByBank(Integer bankId){
         List<QuestionVo> questionByBank = questionBankService.getQuestionsByBankId(bankId);
         return new Result<>(questionByBank,null,null);
+    }
+
+
+    //修改密码
+    @PostMapping("/updatePassword")
+    public Result<String>updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, HttpServletRequest request){
+        User user = (User) request.getAttribute("user");
+        Integer userId = user.getId();
+        System.out.println(userId);
+        userService.updatePassword(userId, updatePasswordDTO.getPrePassword(), updatePasswordDTO.getPassword());
+        return new Result<>(null,true,"修改成功");
     }
 }

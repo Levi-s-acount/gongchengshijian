@@ -1,12 +1,14 @@
 package com.fifteen.webproject.service.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fifteen.webproject.bean.entity.User;
 import com.fifteen.webproject.bean.vo.UserVO;
 import com.fifteen.webproject.mapper.user.UserMapper;
 import com.fifteen.webproject.service.user.UserService;
 import com.fifteen.webproject.utils.SecretUtils;
+import com.fifteen.webproject.utils.exception.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import static com.fifteen.webproject.bean.vo.UserVO.fromUser;
  * @Date 2022/4/8
  **/
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Autowired
     private UserMapper userMapper;
 
@@ -25,9 +27,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     @Override
     public Integer studentLogin(String account, String password) {
         User user = userMapper.getStudentByAccount(account);
-        if (user ==null)return 0;
-        password=SecretUtils.encrypt(password);
-        if (!password.equals(user.getPassword())){
+        if (user == null) return 0;
+        password = SecretUtils.encrypt(password);
+        if (!password.equals(user.getPassword())) {
             return 0;
         }
         return user.getId();
@@ -48,18 +50,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         user.setCollegeId(collegeId);
         user.setUniversityId(universityId);
         int insert = userMapper.insert(user);
-        return insert==1;
+        return insert == 1;
     }
 
     @Override
     public User getStudentByAccount(String account) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("account",account);
+        wrapper.eq("account", account);
         return userMapper.selectOne(wrapper);
     }
 
     @Override
     public UserVO getUserInfoById(Integer userId) {
         return fromUser(userMapper.selectById(userId));
+    }
+
+    @Override
+    public void updatePassword(Integer userId, String prePassword, String password) {
+        if (!prePassword.equals(password)) throw new AppException("两次输入的密码不一样");
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        String newPassword = SecretUtils.encrypt(password);
+        wrapper.set("password",newPassword);
+        wrapper.eq("id",userId);
+        userMapper.update(new User(),wrapper);
     }
 }

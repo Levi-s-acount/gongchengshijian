@@ -14,6 +14,7 @@ import com.fifteen.webproject.service.QuestionService;
 import com.fifteen.webproject.service.user.UserService;
 import com.fifteen.webproject.utils.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,6 +78,7 @@ public class TeacherController {
     }
 
     //添加试题
+    @Transactional
     @PostMapping("/addQuestion")
     public Result<String>addQuestion(@RequestBody @Valid QuestionVo questionVo){
         questionService.addQuestion(questionVo);
@@ -84,6 +86,7 @@ public class TeacherController {
     }
 
     //更新试题
+    @Transactional
     @PostMapping("/updateQuestion")
     public Result<String>updateQuestion(@RequestBody @Valid QuestionVo questionVo){
         questionService.updateQuestion(questionVo);

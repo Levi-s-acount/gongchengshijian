@@ -19,4 +19,7 @@ public interface UserService extends IService<User> {
 
     UserVO getUserInfoById(Integer userId);
 
+    //修改密码
+    void updatePassword(Integer userId,String prePassword,String password);
+
 }
