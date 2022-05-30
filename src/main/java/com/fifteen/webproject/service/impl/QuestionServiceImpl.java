@@ -146,7 +146,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         question.setId(currentQuId);
         setQuestionField(question, questionVo);
         // 设置题目插图
-        if (questionVo.getImages().length != 0) {
+        if (questionVo.getImages() != null) {
             String QuImages = Arrays.toString(questionVo.getImages());
             question.setImage(QuImages.substring(1, QuImages.length() - 1).replaceAll(" ", ""));
         }
@@ -161,7 +161,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             StringBuilder imgs = new StringBuilder();
             StringBuilder answers = new StringBuilder();
             for (int i = 0; i < questionVo.getAnswer().length; i++) {
-                if (questionVo.getAnswer()[i].getImages().length > 0) {// 如果该选项有一张图片信息
+                if (questionVo.getAnswer()[i].getImages()!=null) {// 如果该选项有一张图片信息
                     imgs.append(questionVo.getAnswer()[i].getImages()[0]).append(",");
                 }
                 buildAnswer(answers, questionVo, i, multipleChoice, answer);
