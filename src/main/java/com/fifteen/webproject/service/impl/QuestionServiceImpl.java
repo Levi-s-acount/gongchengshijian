@@ -204,6 +204,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
     }
 
+    @Override
+    public List<Question> getAllBQuestion() {
+        return questionMapper.selectList(new QueryWrapper<Question>().eq("qu_type",4));
+    }
+
     private void buildMultiQuestionAnswer(QuestionVo questionVo, StringBuilder multipleChoice, Answer answer, StringBuilder imgs, StringBuilder answers) {
         if (questionVo.getQuestionType() == 2)
             answer.setTrueOption(multipleChoice.substring(0, multipleChoice.toString().length() - 1));

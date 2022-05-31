@@ -130,6 +130,55 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     }
 
     @Override
+    public List<QuestionVo> getAllAQuestion() {
+        List<Question> questions = questionMapper.selectList(null);
+        // 构造前端需要的vo对象
+        List<QuestionVo> questionVos = new ArrayList<>();
+        for (Question question : questions) {
+            if (question.getQuType()==4)continue;
+            QuestionVo questionVo = new QuestionVo();
+            questionVo.setQuestionId(question.getId());
+            questionVo.setQuestionType(question.getQuType());
+            questionVo.setQuestionLevel(question.getLevel());
+            if (question.getImage() != null && !question.getImage().equals("")) // 防止没有图片对象
+                questionVo.setImages(question.getImage().split(","));
+            questionVo.setCreatePerson(question.getCreatePerson());
+            questionVo.setAnalysis(question.getAnalysis());
+            questionVo.setQuestionContent(question.getQuContent());
+            questionVo.setQuestionType(question.getQuType());
+            Answer answer = answerMapper.selectOne(new QueryWrapper<Answer>().eq("question_id", question.getId()));
+            String[] options = answer.getAllOption().split(",");
+            String[] images = answer.getImages().split(",");
+
+            QuestionVo.Answer[] handleAnswer = new QuestionVo.Answer[options.length];
+            // 字段处理
+            for (int i = 0; i < options.length; i++) {
+                QuestionVo.Answer answer1 = new QuestionVo.Answer();
+                if (images.length - 1 >= i && images[i] != null && !images[i].equals(""))
+                    answer1.setImages(new String[]{images[i]});
+                answer1.setAnswer(options[i]);
+                answer1.setId(i);
+                answer1.setIsTrue("false");
+                handleAnswer[i] = answer1;
+            }
+            if (question.getQuType() != 2) {// 单选和判断
+                int trueOption = Integer.parseInt(answer.getTrueOption());
+                handleAnswer[trueOption].setIsTrue("true");
+                handleAnswer[trueOption].setAnalysis(answer.getAnalysis());
+            } else {// 多选
+                String[] trueOptions = answer.getTrueOption().split(",");
+                for (String trueOption : trueOptions) {
+                    handleAnswer[Integer.parseInt(trueOption)].setIsTrue("true");
+                    handleAnswer[Integer.parseInt(trueOption)].setAnalysis(answer.getAnalysis());
+                }
+            }
+            questionVo.setAnswer(handleAnswer);
+            questionVos.add(questionVo);
+        }
+        return questionVos;
+    }
+
+    @Override
     public void addQuestionToBank(String questionIds, String banks) {
         String[] quIds = questionIds.split(",");
         String[] bankIds = banks.split(",");

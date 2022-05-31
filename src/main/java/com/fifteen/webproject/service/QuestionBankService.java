@@ -1,6 +1,7 @@
 package com.fifteen.webproject.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fifteen.webproject.bean.entity.Question;
 import com.fifteen.webproject.bean.entity.QuestionBank;
 import com.fifteen.webproject.bean.vo.BankHaveQuestionSum;
 import com.fifteen.webproject.bean.vo.QuestionVo;
@@ -20,6 +21,8 @@ public interface QuestionBankService extends IService<QuestionBank> {
     List<QuestionVo> getQuestionByBankIdAndType(Integer bankId, Integer type);
 
     List<QuestionBank> getAllQuestionBanks();
+
+    List<QuestionVo>getAllAQuestion();
 
     void addQuestionToBank(String questionIds, String banks);
 
