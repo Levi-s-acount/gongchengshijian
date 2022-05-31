@@ -153,6 +153,17 @@ public class TeacherController {
         examRecordService.setObjectQuestionScore(totalScore,examRecordId);
         return new Result<>(null,true,"操作成功");
     }
+    @GetMapping("/allAQuestion")
+    public Result<List<QuestionVo>>getAllAQuestion(){
+        List<QuestionVo> allQuestion = questionBankService.getAllAQuestion();
+        return new Result<>(allQuestion,true,null);
+    }
+
+    @GetMapping("/allBQuestion")
+    public Result<List<Question>>getAllBQuestion(){
+        List<Question> allBQuestion = questionService.getAllBQuestion();
+        return new Result<>(allBQuestion,true,null);
+    }
 
 
 }

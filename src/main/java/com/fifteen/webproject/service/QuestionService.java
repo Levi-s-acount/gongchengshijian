@@ -23,4 +23,6 @@ public interface QuestionService extends IService<Question> {
     void addQuestion(QuestionVo questionVo);
 
     void updateQuestion(QuestionVo questionVo);
+
+    List<Question>getAllBQuestion();
 }
