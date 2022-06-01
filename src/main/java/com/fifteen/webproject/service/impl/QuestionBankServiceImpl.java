@@ -74,8 +74,16 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
         // 构造前端需要的vo对象
         List<QuestionVo> questionVos = new ArrayList<>();
         for (Question question : questions) {
+            String quBankId = question.getQuBankId();
+            String[] split = quBankId.split(",");
+            Integer[] ints = new Integer[split.length];
+            for (int i = 0; i < split.length; i++) {
+                int i1 = Integer.parseInt(split[i]);
+                ints[i]=i1;
+            }
             QuestionVo questionVo = new QuestionVo();
             questionVo.setQuestionId(question.getId());
+            questionVo.setBankId(ints);
             questionVo.setQuestionType(question.getQuType());
             questionVo.setQuestionLevel(question.getLevel());
             if (question.getImage() != null && !question.getImage().equals("")) // 防止没有图片对象
@@ -138,7 +146,6 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
             if (question.getQuType()==4)continue;
             String quBankId = question.getQuBankId();
             String[] split = quBankId.split(",");
-            System.out.println(split);
             Integer[] ints = new Integer[split.length];
             for (int i = 0; i < split.length; i++) {
                 int i1 = Integer.parseInt(split[i]);
