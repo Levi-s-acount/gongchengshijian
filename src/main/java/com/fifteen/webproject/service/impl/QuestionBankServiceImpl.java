@@ -136,7 +136,16 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
         List<QuestionVo> questionVos = new ArrayList<>();
         for (Question question : questions) {
             if (question.getQuType()==4)continue;
+            String quBankId = question.getQuBankId();
+            String[] split = quBankId.split(",");
+            System.out.println(split);
+            Integer[] ints = new Integer[split.length];
+            for (int i = 0; i < split.length; i++) {
+                int i1 = Integer.parseInt(split[i]);
+                ints[i]=i1;
+            }
             QuestionVo questionVo = new QuestionVo();
+            questionVo.setBankId(ints);
             questionVo.setQuestionId(question.getId());
             questionVo.setQuestionType(question.getQuType());
             questionVo.setQuestionLevel(question.getLevel());
